@@ -25,3 +25,20 @@ pub fn get_luminosity_class (luminosity_class: &str) -> &str {
         _ => "None",
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn spectral_class () {
+        assert_eq!(get_spectral_class("O"), "Blue");
+        assert_eq!(get_spectral_class("B"), "Blue-White");
+    }
+
+    #[test]
+    fn luminosity_class () {
+        assert_eq!(get_luminosity_class("III"), "Giant");
+        assert_eq!(get_luminosity_class("Ib"), "Supergiant");
+    }
+}

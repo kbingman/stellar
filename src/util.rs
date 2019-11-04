@@ -9,6 +9,7 @@ use sha2::{Digest, Sha256};
 pub fn create_hash(text: &str) -> String {
     let mut hasher = Sha256::default();
     hasher.input(text.as_bytes());
+
     format!("{:x}", hasher.result())
 }
 
@@ -28,4 +29,20 @@ pub fn spherical_to_cartesian(sphere: SphereCoords) -> Coords {
         y: sphere.r * sphere.i.sin() * sphere.a.sin(),
         z: sphere.r * sphere.i.cos(),
     }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn sperical_coords () {
+        let sphere = SphereCoords { r: 1.0, i: 1.0, a: 1.0 };
+        let coords = spherical_to_cartesian(sphere);
+
+        assert_eq!(coords.x, 0.4546487134128409);
+        assert_eq!(coords.y, 0.7080734182735712);
+        assert_eq!(coords.z, 0.5403023058681398);
+    }
+
 }
