@@ -31,18 +31,35 @@ pub fn spherical_to_cartesian(sphere: SphereCoords) -> Coords {
     }
 }
 
+// generate temperature from B-
+pub fn bv_to_temp(bv: f64) -> f64 {
+    (4600.0 * ((1.0 / ((0.92 * bv) + 1.7)) + (1.0 / ((0.92 * bv) + 0.62))))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn sperical_coords () {
-        let sphere = SphereCoords { r: 1.0, i: 1.0, a: 1.0 };
+    fn random_range() {
+        let mut rng = create_seeded_rng("meimcounting");
+        let num = rng.gen_range(0.0, 1.0);
+
+        assert_eq!(num > 0.0, true);
+        assert_eq!(num < 1.0, true);
+    }
+
+    #[test]
+    fn sperical_coords() {
+        let sphere = SphereCoords {
+            r: 1.0,
+            i: 1.0,
+            a: 1.0,
+        };
         let coords = spherical_to_cartesian(sphere);
 
         assert_eq!(coords.x, 0.4546487134128409);
         assert_eq!(coords.y, 0.7080734182735712);
         assert_eq!(coords.z, 0.5403023058681398);
     }
-
 }

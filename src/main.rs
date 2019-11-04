@@ -6,15 +6,15 @@ extern crate sha2;
 extern crate arrayref;
 
 mod models;
-mod util;
 mod star;
+mod util;
 
 use clap::{App, Arg};
 use rand::prelude::*;
 
 use crate::models::SphereCoords;
+use crate::star::{get_luminosity_class, get_spectral_class};
 use crate::util::spherical_to_cartesian;
-use crate::star::{get_spectral_class, get_luminosity_class};
 
 fn main() {
     let matches = App::new("myapp")
@@ -46,7 +46,11 @@ fn main() {
     let lum = get_luminosity_class("Ia");
     println!("Class: {}", lum);
 
-    let sphere = SphereCoords { r: 0.0, i: 0.0, a: 0.0, };
+    let sphere = SphereCoords {
+        r: 0.0,
+        i: 0.0,
+        a: 0.0,
+    };
     let coords = spherical_to_cartesian(sphere);
     println!("coords: {}, {}, {}", coords.x, coords.y, coords.z);
 }
