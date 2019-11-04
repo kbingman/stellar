@@ -1,6 +1,7 @@
 extern crate rand;
 extern crate sha2;
 
+use crate::models::{Coords, SphereCoords};
 use rand::prelude::*;
 use sha2::{Digest, Sha256};
 
@@ -21,17 +22,10 @@ pub fn create_seeded_rng(text: &str) -> StdRng {
 }
 
 // spherical to 3-dimensional Cartesian coordinates
-// pub fn spherical_to_cartesian (sphere) {
-//     cart[0] = sphere[0] * sin(sphere[1]) * cos(sphere[2]);
-//     cart[1] = sphere[0] * sin(sphere[1]) * sin(sphere[2]);
-//     cart[2] = sphere[0] * cos(sphere[1]);
-//     return cart;
-// }
-
-// random double between min and max
-// double randbl(double min, double max) {
-//     // assume the RNG is already seeded
-//     double range = (max - min);
-//     double rng = RAND_MAX / range;
-//     return min + (rand() / rng);
-// }
+pub fn spherical_to_cartesian(sphere: SphereCoords) -> Coords {
+    Coords {
+        x: sphere.r * sphere.i.sin() * sphere.a.cos(),
+        y: sphere.r * sphere.i.sin() * sphere.a.sin(),
+        z: sphere.r * sphere.i.cos(),
+    }
+}
