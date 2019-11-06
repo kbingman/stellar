@@ -108,6 +108,7 @@ pub fn ms_bv_to_radius(bv: f64) -> f64 {
 /**
  * Main Sequence specific functions
  * Generate luminosity from B-V
+ *
  * pow(10, (ba2 + (bb2 * log(bc1 / (bv + bd1)))
  */
 pub fn ms_bv_to_luminosity(bv: f64) -> f64 {
@@ -122,16 +123,16 @@ pub fn ms_bv_to_luminosity(bv: f64) -> f64 {
 /**
  * Super Giant specific functions
  * generate radius from B-V
+ *
  * pow(10, (ba2 + (bb2 * log(bc1 / (bv + bd1)))
  */
 pub fn giant_bv_to_radius(bv: f64) -> f64 {
-    let base: f64 = 10.0;
     let ba3 = 22.25;
     let bb3 = -2.502;
     let bc2 = 8627.59;
     let bd2 = 0.7920;
 
-    base.powf(ba3 + (bb3 * (bc2 / (bv + bd2).ln())))
+    10_f64.powf(ba3 + (bb3 * (bc2 / (bv + bd2).ln())))
 }
 
 /**
@@ -140,13 +141,12 @@ pub fn giant_bv_to_radius(bv: f64) -> f64 {
  * pow(10, (ba2 + (bb2 * log(bc1 / (bv + bd1)))
  */
 pub fn giant_bv_to_luminosity(bv: f64) -> f64 {
-    let base: f64 = 10.0;
     let ba4 = 29.469;
     let bb4 = -3.2676;
     let bc2 = 8627.59;
     let bd2 = 0.7920;
 
-    base.powf(ba4 + (bb4 * (bc2 / (bv + bd2)).ln()))
+    10_f64.powf(ba4 + (bb4 * (bc2 / (bv + bd2)).ln()))
 }
 
 pub fn create_star_from_bv(bv: f64) -> Star {
@@ -161,32 +161,32 @@ pub fn create_star_from_bv(bv: f64) -> Star {
     }
 }
 
-pub fn get_spectral_class_from_temp(temp: u32) -> u32 {
+pub fn get_spectral_class_from_temp(temp: u32) -> String {
     let mut subdiv = 0;
-    // let mut result = "";
+    let mut result: String = format!("None {}", 0);
     if (temp >= 2200) && (temp <= 3700) { // M-class stars
         subdiv = 10 - ((temp - 2200) / 150);
-        // result = format!("M {}", subdiv);
+        result = format!("M {}", subdiv);
     } else if (temp >= 3700) && (temp <= 5200) { // K-class stars
         subdiv = 10 - ((temp - 3700) / 150);
-        // format!("K {}", subdiv);
+        result = format!("K {}", subdiv);
     } else if (temp >= 5200) && (temp <= 6000) { // G-class stars
         subdiv = 10 - ((temp - 5200) / 80);
-        // format!("G {}", subdiv);
+        result = format!("G {}", subdiv);
     } else if (temp >= 6000) && (temp <= 7500) { // F-class stars
         subdiv = 10 - ((temp - 6000) / 150);
-        // format!("F {}", subdiv);
+        result = format!("F {}", subdiv);
     } else if (temp >= 7500) && (temp <= 10000) { // A-class stars
         subdiv = 10 - ((temp - 7500) / 250);
-        // format!("A {}", subdiv);
+        result = format!("A {}", subdiv);
     } else if (temp >= 10000) && (temp <= 30000) { // B-class stars
         subdiv = 10 - ((temp - 10000) / 2000);
-        // format!("B {}", subdiv);
+        result = format!("B {}", subdiv);
     } else if (temp >= 30000) && (temp <= 55000) { // O-class stars
         subdiv = 10 - ((temp - 30000) / 2500);
-        // format!("O {}", subdiv);
+        result = format!("O {}", subdiv);
     }
-    return subdiv;
+    return result;
 }
 
 #[cfg(test)]
@@ -214,6 +214,6 @@ mod tests {
         assert_eq!(star.luminosity, 0.6357974611951837);
         assert_eq!(star.temp, 5436);
         assert_eq!(star.mass, 0.8929552548605576);
-        assert_eq!(star.spectral_class, 8);
+        assert_eq!(star.spectral_class, "G 8");
     }
 }

@@ -4,7 +4,7 @@ pub struct Star {
     pub radius: f64,          //·radius·of·star·in·R_sol¬
     pub luminosity: f64,      //·luminosity·of·star·in·L_sol¬
     pub temp: u32,            //·temperature·of·star·in·K¬
-    pub spectral_class: u32,  //·spectral·class·of·star¬
+    pub spectral_class: String,  //·spectral·class·of·star¬
     // pub lumclass: String,  //·luminosity·class·of·star¬
     // pub coords: Coords,    //·coordinates·of·star·wrt·center¬
     // pub age: f64,          //·age·of·the·star·in·Gyr¬
