@@ -46,12 +46,12 @@ pub fn get_weighted_bv(rng: &mut StdRng) -> f64 {
     let bvfac = rng.gen_range(0.0, 100.0);
     match bvfac {
         b if b <= 0.01 => rng.gen_range(-0.33, -0.3),
-        b if (b >= 0.01) && (b <= 0.13) => rng.gen_range(-0.3, -0.02),
-        b if (b >= 0.13) && (b <= 0.73) => rng.gen_range(-0.02, 0.3),
-        b if (b >= 0.73) && (b <= 3.73) => rng.gen_range(0.3, 0.58),
-        b if (b >= 3.73) && (b <= 11.33) => rng.gen_range(0.58, 0.81),
-        b if (b >= 11.73) && (b <= 22.43) => rng.gen_range(0.81, 1.40),
-        b if (b >= 22.43) && (b <= 100.0) => rng.gen_range(1.40, 3.17),
+        b if b >= 0.01 && b <= 0.13 => rng.gen_range(-0.3, -0.02),
+        b if b >= 0.13 && b <= 0.73 => rng.gen_range(-0.02, 0.3),
+        b if b >= 0.73 && b <= 3.73 => rng.gen_range(0.3, 0.58),
+        b if b >= 3.73 && b <= 11.33 => rng.gen_range(0.58, 0.81),
+        b if b >= 11.33 && b <= 22.43 => rng.gen_range(0.81, 1.40),
+        b if b >= 22.43 && b <= 100.0 => rng.gen_range(1.40, 3.17),
         _ => 0.0,
     }
 }

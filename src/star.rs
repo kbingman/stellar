@@ -1,12 +1,12 @@
 use crate::models::Star;
-use rand::prelude::*;
 // use std::fmt;
 
 /**
  * Returns the name for each Spectal Class
  */
 pub fn get_spectral_class(spectral_class: &str) -> &str {
-    match spectral_class {
+    let spec: &str = &spectral_class.chars().next().unwrap().to_string();
+    match spec {
         "O" => "Blue",
         "B" => "Blue-White",
         "A" => "White",
@@ -33,25 +33,6 @@ pub fn get_luminosity_class(luminosity_class: &str) -> &str {
 }
 
 /**
- * Generate weighted B-V
- *
- * Creates a properly distributed set of B-V Colour indices
- */
-pub fn get_weighted_bv(rng: &mut StdRng) -> f64 {
-    let bvfac = rng.gen_range(0.0, 100.0);
-    match bvfac {
-        b if b <= 0.01 => rng.gen_range(-0.33, -0.3),
-        b if (b >= 0.01) && (b <= 0.13) => rng.gen_range(-0.3, -0.02),
-        b if (b >= 0.13) && (b <= 0.73) => rng.gen_range(-0.02, 0.3),
-        b if (b >= 0.73) && (b <= 3.73) => rng.gen_range(0.3, 0.58),
-        b if (b >= 3.73) && (b <= 11.33) => rng.gen_range(0.58, 0.81),
-        b if (b >= 11.73) && (b <= 22.43) => rng.gen_range(0.81, 1.40),
-        b if (b >= 22.43) && (b <= 100.0) => rng.gen_range(1.40, 3.17),
-        _ => 0.0,
-    }
-}
-
-/**
  * Generate temperature from B-V
  */
 pub fn bv_to_temp(bv: f64) -> u32 {
@@ -63,30 +44,34 @@ pub fn bv_to_temp(bv: f64) -> u32 {
  */
 pub fn luminosity_to_mass(lum: f64) -> f64 {
     // branch 1: mass < 0.43
-    let la1: f64 = 0.3302;
-    let lb1: f64 = 1.8946;
-    let lc1: f64 = 0.4347;
+    const LA1: f64 = 0.3302;
+    const LB1: f64 = 1.8946;
+    const LC1: f64 = 0.4347;
+
     // branch 2: 0.43 < mass < 2
-    let la2: f64 = 16.0;
-    let lb2: f64 = 1.0;
-    let lc2: f64 = 0.25;
+    const LA2: f64 = 16.0;
+    const LB2: f64 = 1.0;
+    const LC2: f64 = 0.25;
+
     // branch 3: 2 < mass < 20
-    let la3: f64 = 50087.9;
-    let lb3: f64 = 0.9038;
-    let lc3: f64 = 0.25;
+    const LA3: f64 = 50087.9;
+    const LB3: f64 = 0.9038;
+    const LC3: f64 = 0.25;
+
     // branch 4: 20 < mass < 55
-    let la4: f64 = 1233870.0;
-    let lb4: f64 = 1.0;
-    let lc4: f64 = 0.2857;
+    const LA4: f64 = 1233870.0;
+    const LB4: f64 = 1.0;
+    const LC4: f64 = 0.2857;
+
     // branch 5: mass > 55
-    let la5: f64 = 32000.0;
+    const LA5: f64 = 32000.0;
 
     match lum {
-        l if l < la1 => lb1 * lum.powf(lc1),
-        l if (l > la1) && (l < la2) => lb2 * lum.powf(lc2),
-        l if (l > la2) && (l < la3) => lb3 * lum.powf(lc3),
-        l if (l > la3) && (l < la4) => lb4 * lum.powf(lc4),
-        l if l > la4 => lum * la5,
+        l if l < LA1 => LB1 * lum.powf(LC1),
+        l if l > LA1 && l < LA2 => LB2 * lum.powf(LC2),
+        l if l > LA2 && l < LA3 => LB3 * lum.powf(LC3),
+        l if l > LA3 && l < LA4 => LB4 * lum.powf(LC4),
+        l if l > LA4 => lum * LA5,
         _ => 0.0,
     }
 }
@@ -94,15 +79,16 @@ pub fn luminosity_to_mass(lum: f64) -> f64 {
 /**
  * Main Sequence specific functions
  * Generate luminosity from B-V
+ *
  * pow(10, (ba1 + (bb1 * log(bc1 / (bv + bd1)))))
  */
 pub fn ms_bv_to_radius(bv: f64) -> f64 {
-    let ba1 = -5.793;
-    let bb1 = 0.6729;
-    let bc1 = 7360.9;
-    let bd1 = 0.6411;
+    const BA1: f64 = -5.793;
+    const BB1: f64 = 0.6729;
+    const BC1: f64 = 7360.9;
+    const BD1: f64 = 0.6411;
 
-    10_f64.powf(ba1 + (bb1 * (bc1 / (bv + bd1)).ln()))
+    10_f64.powf(BA1 + (BB1 * (BC1 / (bv + BD1)).ln()))
 }
 
 /**
@@ -112,12 +98,12 @@ pub fn ms_bv_to_radius(bv: f64) -> f64 {
  * pow(10, (ba2 + (bb2 * log(bc1 / (bv + bd1)))
  */
 pub fn ms_bv_to_luminosity(bv: f64) -> f64 {
-    let ba2 = -26.63;
-    let bb2 = 3.083;
-    let bc1 = 7360.9;
-    let bd1 = 0.6411;
+    const BA2: f64 = -26.63;
+    const BB2: f64 = 3.083;
+    const BC1: f64 = 7360.9;
+    const BD1: f64 = 0.6411;
 
-    10_f64.powf(ba2 + (bb2 * (bc1 / (bv + bd1)).ln()))
+    10_f64.powf(BA2 + (BB2 * (BC1 / (bv + BD1)).ln()))
 }
 
 /**
@@ -149,56 +135,44 @@ pub fn giant_bv_to_luminosity(bv: f64) -> f64 {
     10_f64.powf(ba4 + (bb4 * (bc2 / (bv + bd2)).ln()))
 }
 
+/**
+ * Creates a Star from a B-V value 
+ */
 pub fn create_star_from_bv(bv: f64) -> Star {
     let luminosity = ms_bv_to_luminosity(bv);
     let temp = bv_to_temp(bv);
+    let spectral_class = &mut get_spectral_class_from_temp(temp);
+
     Star {
-        temp: temp,
-        luminosity: luminosity,
+        temp,
+        luminosity,
         radius: ms_bv_to_radius(bv),
         mass: luminosity_to_mass(luminosity),
-        spectral_class: get_spectral_class_from_temp(temp),
+        spectral_class: spectral_class.to_string(),
+        luminosity_class: "V".to_string(),
+        color: get_spectral_class(&spectral_class).to_string(),
     }
 }
 
+/**
+ * Matches the temp to the Spectral Class of a star
+ */
 pub fn get_spectral_class_from_temp(temp: u32) -> String {
-    let mut subdiv = 0;
-    let mut result: String = format!("None {}", 0);
-    if (temp >= 2200) && (temp <= 3700) { // M-class stars
-        subdiv = 10 - ((temp - 2200) / 150);
-        result = format!("M {}", subdiv);
-    } else if (temp >= 3700) && (temp <= 5200) { // K-class stars
-        subdiv = 10 - ((temp - 3700) / 150);
-        result = format!("K {}", subdiv);
-    } else if (temp >= 5200) && (temp <= 6000) { // G-class stars
-        subdiv = 10 - ((temp - 5200) / 80);
-        result = format!("G {}", subdiv);
-    } else if (temp >= 6000) && (temp <= 7500) { // F-class stars
-        subdiv = 10 - ((temp - 6000) / 150);
-        result = format!("F {}", subdiv);
-    } else if (temp >= 7500) && (temp <= 10000) { // A-class stars
-        subdiv = 10 - ((temp - 7500) / 250);
-        result = format!("A {}", subdiv);
-    } else if (temp >= 10000) && (temp <= 30000) { // B-class stars
-        subdiv = 10 - ((temp - 10000) / 2000);
-        result = format!("B {}", subdiv);
-    } else if (temp >= 30000) && (temp <= 55000) { // O-class stars
-        subdiv = 10 - ((temp - 30000) / 2500);
-        result = format!("O {}", subdiv);
+    match temp {
+        t if t >= 2200 && t <= 3700 => format!("M{}", 10 - ((temp - 2200) / 150)),
+        t if t >= 3700 && t <= 5200 => format!("K{}", 10 - ((temp - 3700) / 150)),
+        t if t >= 5200 && t <= 6000 => format!("G{}", 10 - ((temp - 5200) / 80)),
+        t if t >= 6000 && t <= 7500 => format!("F{}", 10 - ((temp - 6000) / 150)),
+        t if t >= 7500 && t <= 10000 => format!("A{}", 10 - ((temp - 7500) / 250)),
+        t if t >= 10000 && t <= 30000 => format!("B{}", 10 - ((temp - 10000) / 2000)),
+        t if t >= 30000 && t <= 50000 => format!("O{}", 10 - ((temp - 30000) / 2500)),
+        _ => format!("{}", 0),
     }
-    return result;
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn spectral_class() {
-        assert_eq!(get_spectral_class("O"), "Blue");
-        assert_eq!(get_spectral_class("B"), "Blue-White");
-        assert_eq!(get_spectral_class("Z"), "None");
-    }
 
     #[test]
     fn luminosity_class() {
@@ -207,13 +181,74 @@ mod tests {
     }
 
     #[test]
-    fn main_sequence() {
+    fn g_main_sequence() {
         let star = create_star_from_bv(0.749927);
 
         assert_eq!(star.radius, 0.9470525016124451);
         assert_eq!(star.luminosity, 0.6357974611951837);
         assert_eq!(star.temp, 5436);
         assert_eq!(star.mass, 0.8929552548605576);
-        assert_eq!(star.spectral_class, "G 8");
+        assert_eq!(star.spectral_class, "G8");
+        assert_eq!(star.color, "Yellow");
+    }
+    
+    #[test]
+    fn f_main_sequence() {
+        let star = create_star_from_bv(0.32);
+
+        assert_eq!(star.radius, 1.679415144317238);
+        assert_eq!(star.luminosity, 8.773298365605115);
+        assert_eq!(star.temp, 7337);
+        assert_eq!(star.mass, 1.721039051301309);
+        assert_eq!(star.spectral_class, "F2");
+        assert_eq!(star.color, "Yellow-White");
+    }
+
+    #[test]
+    fn a_main_sequence() {
+        let star = create_star_from_bv(0.1715);
+
+        assert_eq!(star.radius, 2.1781974741627175);
+        assert_eq!(star.luminosity, 28.88098565224987);
+        assert_eq!(star.temp, 8390);
+        assert_eq!(star.mass, 2.095199296960982);
+        assert_eq!(star.spectral_class, "A7");
+        assert_eq!(star.color, "White");
+    }
+
+    #[test]
+    fn m_main_sequence() {
+        let star = create_star_from_bv(1.47);
+
+        assert_eq!(star.radius, 0.4962065645977362);
+        assert_eq!(star.luminosity, 0.03289981815369502);
+        assert_eq!(star.temp, 3839);
+        assert_eq!(star.mass, 0.42947861739265913);
+        assert_eq!(star.spectral_class, "K10");
+        assert_eq!(star.color, "Orange");
+    }
+
+    #[test]
+    fn b_main_sequence() {
+        let star = create_star_from_bv(-0.033);
+
+        assert_eq!(star.radius, 3.413270590776482);
+        assert_eq!(star.luminosity, 226.1375097189035);
+        assert_eq!(star.temp, 10556);
+        assert_eq!(star.mass, 3.504818142850233);
+        assert_eq!(star.spectral_class, "B10");
+        assert_eq!(star.color, "Blue-White");
+    }
+
+    #[test]
+    fn o_main_sequence() {
+        let star = create_star_from_bv(-0.31);
+
+        assert_eq!(star.radius, 8.7546612237247);
+        assert_eq!(star.luminosity, 16927.256163578622);
+        assert_eq!(star.temp, 16991);
+        assert_eq!(star.mass, 10.309057895579505);
+        assert_eq!(star.spectral_class, "B7");
+        assert_eq!(star.color, "Blue-White");
     }
 }
