@@ -1,12 +1,12 @@
 // Basic Stellar model
 pub struct Star {
-    pub mass: f64,                 //·mass·of·star·in·M_sol¬
-    pub radius: f64,               //·radius·of·star·in·R_sol¬
-    pub luminosity: f64,           //·luminosity·of·star·in·L_sol¬
-    pub temp: u32,                 //·temperature·of·star·in·K¬
-    pub spectral_class: String,    //·spectral·class·of·star¬
-    pub luminosity_class: String,  //·luminosity·class·of·star¬
-    pub color: String,  
+    pub mass: f64,                //·mass·of·star·in·M_sol¬
+    pub radius: f64,              //·radius·of·star·in·R_sol¬
+    pub luminosity: f64,          //·luminosity·of·star·in·L_sol¬
+    pub temp: u32,                //·temperature·of·star·in·K¬
+    pub spectral_class: String,   //·spectral·class·of·star¬
+    pub luminosity_class: String, //·luminosity·class·of·star¬
+    pub color: String,
     // pub coords: Coords,         //·coordinates·of·star·wrt·center¬
     // pub age: f64,               //·age·of·the·star·in·Gyr¬
     // pub lifespan: f64,          //·calculated·main·sequence·lifespan·of·the·star·in·Gyr¬

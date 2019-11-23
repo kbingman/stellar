@@ -1,5 +1,4 @@
 use crate::models::Star;
-// use std::fmt;
 
 /**
  * Returns the name for each Spectal Class
@@ -14,6 +13,7 @@ pub fn get_spectral_class(spectral_class: &str) -> &str {
         "G" => "Yellow",
         "K" => "Orange",
         "M" => "Red",
+        "D" => "Degenerate",
         _ => "None",
     }
 }
@@ -28,7 +28,7 @@ pub fn get_luminosity_class(luminosity_class: &str) -> &str {
         "Iab" => "Supergiant",
         "Ia" => "Supergiant",
         "Ia+" => "Hypergiant",
-        _ => "None",
+        _ => "",
     }
 }
 
@@ -113,12 +113,12 @@ pub fn ms_bv_to_luminosity(bv: f64) -> f64 {
  * pow(10, (ba2 + (bb2 * log(bc1 / (bv + bd1)))
  */
 pub fn giant_bv_to_radius(bv: f64) -> f64 {
-    let ba3 = 22.25;
-    let bb3 = -2.502;
-    let bc2 = 8627.59;
-    let bd2 = 0.7920;
+    const BA3: f64 = 22.25;
+    const BB3: f64 = -2.502;
+    const BC2: f64 = 8627.59;
+    const BD2: f64 = 0.7920;
 
-    10_f64.powf(ba3 + (bb3 * (bc2 / (bv + bd2).ln())))
+    10_f64.powf(BA3 + (BB3 * (BC2 / (bv + BD2).ln())))
 }
 
 /**
@@ -127,16 +127,16 @@ pub fn giant_bv_to_radius(bv: f64) -> f64 {
  * pow(10, (ba2 + (bb2 * log(bc1 / (bv + bd1)))
  */
 pub fn giant_bv_to_luminosity(bv: f64) -> f64 {
-    let ba4 = 29.469;
-    let bb4 = -3.2676;
-    let bc2 = 8627.59;
-    let bd2 = 0.7920;
+    const BA4: f64 = 29.469;
+    const BB4: f64 = -3.2676;
+    const BC2: f64 = 8627.59;
+    const BD2: f64 = 0.7920;
 
-    10_f64.powf(ba4 + (bb4 * (bc2 / (bv + bd2)).ln()))
+    10_f64.powf(BA4 + (BB4 * (BC2 / (bv + BD2)).ln()))
 }
 
 /**
- * Creates a Star from a B-V value 
+ * Creates a Star from a B-V value
  */
 pub fn create_star_from_bv(bv: f64) -> Star {
     let luminosity = ms_bv_to_luminosity(bv);
@@ -191,7 +191,7 @@ mod tests {
         assert_eq!(star.spectral_class, "G8");
         assert_eq!(star.color, "Yellow");
     }
-    
+
     #[test]
     fn f_main_sequence() {
         let star = create_star_from_bv(0.32);

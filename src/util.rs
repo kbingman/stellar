@@ -38,6 +38,22 @@ pub fn spherical_to_cartesian(sphere: SphereCoords) -> Coords {
 }
 
 /**
+ * Generate weighted Luminosity classes
+ *
+ * Creates a properly distributed set of Luminosity classes based on
+ * local distribution of Giant (type III) and Supergiant (type I) stars
+ */
+pub fn get_weighted_luminosity_flags(rng: &mut StdRng) -> &str {
+    let lum_factor = rng.gen_range(0.0, 100.0);
+    match lum_factor {
+        l if l <= 0.00025 => "I",
+        l if l >= 1.0 && l <= 8.5 => "III",
+        l if l >= 8.5 && l <= 100.0 => "V",
+        _ => "V",
+    }
+}
+
+/**
  * Generate weighted B-V
  *
  * Creates a properly distributed set of B-V Colour indices
@@ -88,6 +104,10 @@ mod tests {
         let mut rng = create_seeded_rng("miseryofbodiesofcities");
         let bv = get_weighted_bv(&mut rng);
 
+        //  for _ in 0..10 {
+        //    let bv = get_weighted_bv(&mut rng);
+        //    println!("bv: {}", bv);
+        //  }
         assert_eq!(bv, 1.6354379193425592);
     }
 }
