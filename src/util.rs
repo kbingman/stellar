@@ -1,6 +1,3 @@
-extern crate rand;
-extern crate sha2;
-
 use crate::models::{Coords, SphereCoords};
 use rand::prelude::*;
 use sha2::{Digest, Sha256};
@@ -41,16 +38,22 @@ pub fn spherical_to_cartesian(sphere: SphereCoords) -> Coords {
  * Generate weighted Luminosity classes
  *
  * Creates a properly distributed set of Luminosity classes based on
- * local distribution of Giant (type III) and Supergiant (type I) stars
+ * local distribution of Giant (type III) and Supergiant (type I)
+ * and Main Sequence dwarf stars(type V)
  */
-pub fn get_weighted_luminosity_flags(rng: &mut StdRng) -> &str {
+pub fn get_weighted_luminosity_class(rng: &mut StdRng) -> String {
     let lum_factor = rng.gen_range(0.0, 100.0);
-    match lum_factor {
-        l if l <= 0.00025 => "I",
-        l if l >= 1.0 && l <= 8.5 => "III",
+    (match lum_factor {
+        // l if l <= 0.00025 => "0",
+        l if l <= 0.00025 => "Ia",
+        l if l >= 0.00025 && l <= 0.0005 => "I",
+        // l if l >= 0.0005 && l <= 1.0 => "II",
+        l if l >= 0.0005 && l <= 8.5 => "III",
+        // l if l >= 1.0 && l <= 8.5 => "III",
         l if l >= 8.5 && l <= 100.0 => "V",
         _ => "V",
-    }
+    })
+    .to_string()
 }
 
 /**
@@ -77,15 +80,6 @@ mod tests {
     use super::*;
 
     #[test]
-    fn random_range() {
-        let mut rng = create_seeded_rng("meimcounting");
-        let num = rng.gen_range(0.0, 1.0);
-
-        assert_eq!(num > 0.0, true);
-        assert_eq!(num < 1.0, true);
-    }
-
-    #[test]
     fn sperical_coords() {
         let sphere = SphereCoords {
             r: 1.0,
@@ -109,5 +103,57 @@ mod tests {
         //    println!("bv: {}", bv);
         //  }
         assert_eq!(bv, 1.6354379193425592);
+    }
+
+    #[test]
+    fn weighted_luminosity_flags() {
+        // struct Types<'a> {
+        //     type_i: &'a u32,
+        //     type_ia: &'a u32,
+        //     type_ii: &'a u32,
+        //     type_iii: &'a u32,
+        //     type_iv: &'a u32,
+        //     type_v: &'a u32,
+        //     type_vi: &'a u32,
+        // }
+
+        let mut rng = create_seeded_rng("thestarsmydestination");
+        let mut type_o = 0;
+        let mut type_i = 0;
+        let mut type_ia = 0;
+        let mut type_ii = 0;
+        let mut type_iii = 0;
+        // let mut type_iv = 0;
+        let mut type_v = 0;
+        // let mut type_vi = 0;
+
+        for _ in 0..500000 {
+            let mkk = get_weighted_luminosity_class(&mut rng);
+            // println!("{}, bkk: {}", i, mkk);
+            if mkk == "O" {
+                type_o = type_o + 1;
+            }
+            if mkk == "I" {
+                type_i = type_i + 1;
+            }
+            if mkk == "Ia" {
+                type_ia = type_ia + 1;
+            }
+            if mkk == "II" {
+                type_ii = type_ii + 1;
+            }
+            if mkk == "III" {
+                type_iii = type_iii + 1;
+            }
+            if mkk == "V" {
+                type_v = type_v + 1;
+            }
+        }
+        assert_eq!(type_o, 0);
+        assert_eq!(type_i, 2);
+        assert_eq!(type_ia, 2);
+        assert_eq!(type_ii, 0);
+        assert_eq!(type_iii, 42674);
+        assert_eq!(type_v, 457322);
     }
 }
