@@ -9,7 +9,7 @@ mod util;
 use rand::prelude::StdRng;
 
 // use crate::models::SphereCoords;
-use star::create_star_from_bv;
+use star::Star;
 use util::get_weighted_bv;
 
 fn main() {
@@ -22,7 +22,7 @@ fn main() {
 
     for _ in 0..10 {
         let bv = get_weighted_bv(&mut rng);
-        let star = create_star_from_bv(bv, "V");
+        let star = Star::create_from_bv(bv, "V");
 
         println!("B-V: {:.*}", 3, bv);
         println!("Mass: {:.*}", 3, star.mass);
